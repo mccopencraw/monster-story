@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勇敢的窗口怪獸 - 故事閱讀與詞語填充</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .cover-section {
+            position: relative;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .cover-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 40px 30px 30px;
+            color: white;
+        }
+
+        .cover-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .cover-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .story-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .story-text {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: #444;
+            text-align: justify;
+        }
+
+        .exercise-section {
+            background: #f8f9ff;
+        }
+
+        .exercise-title {
+            font-size: 1.8rem;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .exercise-question {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            flex: 1;
+            line-height: 1.8;
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 3px solid #667eea;
+            margin: 0 5px;
+            padding: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .blank:hover {
+            background: #f0f2ff;
+        }
+
+        .blank:focus {
+            outline: none;
+            background: #f0f2ff;
+            border-bottom-color: #764ba2;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f2ff;
+            border-radius: 10px;
+        }
+
+        .word-option {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .word-option:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .word-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .word-option.correct {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .word-option.wrong {
+            background: #f44336;
+            border-color: #f44336;
+            color: white;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .check-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .result.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+
+        .result.error {
+            background: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .words-taught {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .word-tag {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .moral-box {
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
+            border-left: 5px solid #f9a825;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .moral-title {
+            font-size: 1.2rem;
+            color: #f57f17;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .moral-text {
+            color: #555;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 封面 -->
+        <div class="card cover-section">
+            <img src="http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-03-29%2Fedf7f236-7a6e-45e1-95e1-84c22db31b6e_aigc.jpeg" alt="勇敢的窗口怪獸" class="cover-image">
+            <div class="cover-overlay">
+                <h1 class="cover-title">勇敢的窗口怪獸</h1>
+                <p class="cover-subtitle">一個關於勇氣與友誼的故事</p>
+            </div>
+        </div>
+
+        <!-- 學習詞語 -->
+        <div class="card">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-badge">📚</span>
+                    <h2 class="section-title">本日學習詞語</h2>
+                </div>
+                <div class="words-taught">
+                    <span class="word-tag">怪獸</span>
+                    <span class="word-tag">每天</span>
+                    <span class="word-tag">窗口</span>
+                    <span class="word-tag">勇敢</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 起 -->
+        <div class="card">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-badge">起</span>
+                    <h2 class="section-title">故事的開始</h2>
+                </div>
+                <img src="http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-03-29%2Fa2acc99c-ef1d-4f72-b658-56412e29e199_aigc.jpeg" alt="起" class="story-image">
+                <p class="story-text">
+                    小鎮裡住著一隻特別的<span style="color:#667eea;font-weight:700">怪獸</span>，他叫做阿勇。阿勇不像一般的怪獸，他有著大大的眼睛和溫柔的笑容。但是小鎮的人們很害怕他，<span style="color:#667eea;font-weight:700">每天</span>都把窗戶關得紧紧的，不敢出門。
+                </p>
+            </div>
+        </div>
+
+        <!-- 承 -->
+        <div class="card">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-badge">承</span>
+                    <h2 class="section-title">故事的發展</h2>
+                </div>
+                <img src="http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-03-29%2F12c80cfa-fe48-4a30-a24f-56b30c7b3b20_aigc.jpeg" alt="承" class="story-image">
+                <p class="story-text">
+                    阿勇感到很孤單。他<span style="color:#667eea;font-weight:700">每天</span>只能透過<span style="color:#667eea;font-weight:700">窗口</span>看著外面的小孩玩耍，卻沒有人願意靠近他。有一天，一個小女孩感冒了，她的爸爸媽媽都不在家，她一個人躺在床上哭泣。
+                </p>
+            </div>
+        </div>
+
+        <!-- 轉 -->
+        <div class="card">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-badge">轉</span>
+                    <h2 class="section-title">故事的轉折</h2>
+                </div>
+                <img src="http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-03-29%2F9fcd1c7b-3d8e-4136-adbe-478ce2257ca0_aigc.jpeg" alt="轉" class="story-image">
+                <p class="story-text">
+                    就在那個下雨的夜晚，小女孩虛弱地走到<span style="color:#667eea;font-weight:700">窗口</span>，向外張望。她看見了<span style="color:#667eea;font-weight:700">勇敢</span>的阿勇，害怕地退後了一步。但是阿勇沒有離開，他溫柔地用大葉子為小女孩擋雨，還從口袋裡拿出一顆糖果放在窗口。
+                </p>
+            </div>
+        </div>
+
+        <!-- 合 -->
+        <div class="card">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-badge">合</span>
+                    <h2 class="section-title">故事的結局</h2>
+                </div>
+                <img src="http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-03-29%2F2fc17744-6262-4b89-bbaf-606273927f2f_aigc.jpeg" alt="合" class="story-image">
+                <p class="story-text">
+                    小女孩<span style="color:#667eea;font-weight:700">勇敢</span>地打開了門，她發現阿勇其實是一隻善良的<span style="color:#667eea;font-weight:700">怪獸</span>。從那天起，小鎮的人們不再害怕阿勇，他們<span style="color:#667eea;font-weight:700">每天</span>透過<span style="color:#667eea;font-weight:700">窗口</span>和阿勇打招呼。阿勇終於不再孤單，他成為了小鎮最受歡迎的守護者。
+                </p>
+                <div class="moral-box">
+                    <div class="moral-title">📖 故事啟示</div>
+                    <p class="moral-text">這個故事告訴我們：勇敢不只是面對困難，更是敞開心扉接納與眾不同的人。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 詞語填充練習 -->
+        <div class="card exercise-section">
+            <div class="section">
+                <h2 class="exercise-title">✏️ 圖片詞語填充練習</h2>
+                
+                <!-- 題目1 -->
+                <div class="exercise-card" data-blanks="怪獸">
+                    <div class="exercise-question">
+                        <span class="question-number">1</span>
+                        <div class="question-text">
+                            小鎮裡住著一隻特別的小<span class="blank" data-answer="怪獸">____</span>，他叫做阿勇。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                        <span class="word-option" data-word="窗口">窗口</span>
+                        <span class="word-option" data-word="每天">每天</span>
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                    </div>
+                </div>
+
+                <!-- 題目2 -->
+                <div class="exercise-card" data-blanks="每天">
+                    <div class="exercise-question">
+                        <span class="question-number">2</span>
+                        <div class="question-text">
+                            人們<span class="blank" data-answer="每天">____</span>都把窗戶關得紧紧的。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                        <span class="word-option" data-word="每天">每天</span>
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                        <span class="word-option" data-word="窗口">窗口</span>
+                    </div>
+                </div>
+
+                <!-- 題目3 -->
+                <div class="exercise-card" data-blanks="窗口">
+                    <div class="exercise-question">
+                        <span class="question-number">3</span>
+                        <div class="question-text">
+                            阿勇透過<span class="blank" data-answer="窗口">____</span>看著外面的小孩玩耍。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="窗口">窗口</span>
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                        <span class="word-option" data-word="每天">每天</span>
+                    </div>
+                </div>
+
+                <!-- 題目4 -->
+                <div class="exercise-card" data-blanks="勇敢">
+                    <div class="exercise-question">
+                        <span class="question-number">4</span>
+                        <div class="question-text">
+                            她看見了<span class="blank" data-answer="勇敢">____</span>的阿勇。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="每天">每天</span>
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                        <span class="word-option" data-word="窗口">窗口</span>
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                    </div>
+                </div>
+
+                <!-- 題目5 -->
+                <div class="exercise-card" data-blanks="勇敢">
+                    <div class="exercise-question">
+                        <span class="question-number">5</span>
+                        <div class="question-text">
+                            小女孩<span class="blank" data-answer="勇敢">____</span>地打開了門。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                        <span class="word-option" data-word="窗口">窗口</span>
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                        <span class="word-option" data-word="每天">每天</span>
+                    </div>
+                </div>
+
+                <!-- 題目6 -->
+                <div class="exercise-card" data-blanks="怪獸,每天,窗口">
+                    <div class="exercise-question">
+                        <span class="question-number">6</span>
+                        <div class="question-text">
+                            從那天起，人們<span class="blank" data-answer="每天">____</span>透過<span class="blank" data-answer="窗口">____</span>和<span class="blank" data-answer="怪獸">____</span>阿勇打招呼。
+                        </div>
+                    </div>
+                    <div class="word-bank">
+                        <span class="word-option" data-word="怪獸">怪獸</span>
+                        <span class="word-option" data-word="每天">每天</span>
+                        <span class="word-option" data-word="窗口">窗口</span>
+                        <span class="word-option" data-word="勇敢">勇敢</span>
+                    </div>
+                </div>
+
+                <button class="check-btn" onclick="checkAnswers()">檢查答案 ✓</button>
+                
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 勇敢的窗口怪獸 - 詞語學習與填充練習</p>
+        </div>
+    </div>
+
+    <script>
+        // 互動選詞功能
+        document.querySelectorAll('.word-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const card = this.closest('.exercise-card');
+                const blanks = card.querySelectorAll('.blank:not(.filled)');
+                
+                if (blanks.length > 0) {
+                    const blank = blanks[0];
+                    const word = this.dataset.word;
+                    
+                    blank.textContent = word;
+                    blank.classList.add('filled');
+                    this.classList.add('selected');
+                    this.style.pointerEvents = 'none';
+                    this.style.opacity = '0.5';
+                }
+            });
+        });
+
+        // 雙擊移除已填入的詞
+        document.querySelectorAll('.blank').forEach(blank => {
+            blank.addEventListener('dblclick', function() {
+                if (this.classList.contains('filled')) {
+                    const word = this.textContent;
+                    this.textContent = '';
+                    this.classList.remove('filled');
+                    
+                    // 重新啟用對應的詞語按鈕
+                    const card = this.closest('.exercise-card');
+                    card.querySelectorAll('.word-option').forEach(opt => {
+                        if (opt.dataset.word === word && opt.style.pointerEvents === 'none') {
+                            opt.style.pointerEvents = 'auto';
+                            opt.style.opacity = '1';
+                            opt.classList.remove('selected');
+                        }
+                    });
+                }
+            });
+        });
+
+        // 檢查答案
+        function checkAnswers() {
+            let allCorrect = true;
+            let totalQuestions = 0;
+            let correctCount = 0;
+            
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                const blanks = card.querySelectorAll('.blank');
+                blanks.forEach(blank => {
+                    totalQuestions++;
+                    const userAnswer = blank.textContent.trim();
+                    const correctAnswer = blank.dataset.answer;
+                    
+                    if (userAnswer === correctAnswer) {
+                        blank.style.backgroundColor = '#c8e6c9';
+                        blank.style.borderColor = '#4CAF50';
+                        blank.style.color = '#2e7d32';
+                        correctCount++;
+                    } else {
+                        blank.style.backgroundColor = '#ffcdd2';
+                        blank.style.borderColor = '#f44336';
+                        blank.style.color = '#c62828';
+                        allCorrect = false;
+                    }
+                });
+            });
+            
+            const resultDiv = document.getElementById('result');
+            if (allCorrect) {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = '🎉 恭喜！全部答對了！太棒了！';
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `答對了 ${correctCount}/${totalQuestions} 題，再試一次吧！💪`;
+            }
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
